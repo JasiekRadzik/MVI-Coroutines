@@ -1,0 +1,123 @@
+plugins {
+    id 'com.android.application'
+
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+
+    id 'androidx.navigation.safeargs.kotlin'
+
+    id 'dagger.hilt.android.plugin'
+}
+
+def cfg = rootProject.ext.config
+def libs = rootProject.ext.lib
+def testLibs = rootProject.ext.testLib
+
+android {
+    compileSdk cfg.compileSdkVersion
+
+    defaultConfig {
+        applicationId cfg.packageName
+
+        minSdk cfg.minSdkVersion
+        targetSdk cfg.targetSdkVersion
+
+        versionCode cfg.versionCode
+        versionName cfg.versionName
+
+        testInstrumentationRunner cfg.testInstrumentationRunner
+
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    flavorDimensions "releaseType"
+
+    productFlavors {
+        development {
+            dimension "releaseType"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+        staging {
+            dimension "releaseType"
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+        }
+        production {
+            dimension "releaseType"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
+}
+
+dependencies {
+    // Layer modules
+    implementation project(":domain")
+    implementation project(":data")
+
+    // Kotlin
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.coroutines}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${libs.coroutines}"
+
+    // Material Design
+    implementation "com.google.android.material:material:${libs.material}"
+
+    // Support libraries
+    implementation "androidx.core:core-ktx:${libs.core_ktx}"
+    implementation "androidx.appcompat:appcompat:${libs.appcompat}"
+    implementation "androidx.constraintlayout:constraintlayout:${libs.constraintlayout}"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-ui-ktx:${libs.navigation}"
+    implementation "androidx.navigation:navigation-fragment-ktx:${libs.navigation}"
+    api "androidx.navigation:navigation-fragment-ktx:${libs.navigation}"
+
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${libs.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${libs.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${libs.lifecycle}"
+
+    // Dependency injection
+    implementation "com.google.dagger:hilt-android:${libs.hilt}"
+    kapt "com.google.dagger:hilt-compiler:${libs.hilt}"
+    kapt "androidx.hilt:hilt-compiler:${libs.hilt_work_manager}"
+    implementation "androidx.hilt:hilt-work:${libs.hilt_work_manager}"
+
+    // Debugging
+    implementation "com.jakewharton.timber:timber:${libs.timber}"
+
+    // Work
+    implementation "androidx.work:work-runtime-ktx:${libs.work_manager}"
+
+    // Testing
+    testImplementation "junit:junit:${testLibs.junit}"
+    testImplementation "androidx.test:core:${testLibs.androidx_test}" // Robolectric env
+    testImplementation "androidx.test:runner:${testLibs.android_test_runner}"
+    testImplementation "androidx.test.ext:junit:${testLibs.androidx_test_junit}"
+    testImplementation "org.mockito:mockito-core:${testLibs.mockito}" // Mockito
+    testImplementation "org.mockito:mockito-inline:${testLibs.mockito}"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:${testLibs.mockito_kt}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$libs.coroutines"
+    testImplementation "io.mockk:mockk:${testLibs.mockk}" // Mockk framework
+    testImplementation "com.google.truth:truth:${testLibs.truth}"
+}

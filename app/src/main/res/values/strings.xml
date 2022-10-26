@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MVI Coroutines</string>
+
+    <string name="demo_reverse_text_success">Text reversed successfully</string>
+    <string name="demo_reverse_text_error">Could not reverse text</string>
+    <string name="demo_reverse_text_button">Reverse text</string>
+    <string name="demo_enable_reverse">Enable reverse text</string>
+    <string name="demo_disable_reverse">Disable reverse text</string>
+    <string name="demo_reset">Reset</string>
+    <string name="demo_reset_info">Reset successful</string>
+</resources>

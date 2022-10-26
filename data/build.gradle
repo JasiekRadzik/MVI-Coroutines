@@ -1,0 +1,42 @@
+plugins {
+    id 'com.android.library'
+
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+}
+
+def cfg = rootProject.ext.config
+def libs = rootProject.ext.lib
+
+android {
+    compileSdk cfg.compileSdkVersion
+
+    defaultConfig {
+        minSdk cfg.minSdkVersion
+        targetSdk cfg.targetSdkVersion
+
+        testInstrumentationRunner cfg.testInstrumentationRunner
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Clean architecture modules
+    implementation project(":domain")
+
+    // Kotlin
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.coroutines}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${libs.coroutines}"
+
+    implementation "com.google.dagger:hilt-android:${libs.hilt}"
+    kapt "com.google.dagger:hilt-compiler:${libs.hilt}"
+    kapt "androidx.hilt:hilt-compiler:${libs.hilt_work_manager}"
+    implementation "androidx.hilt:hilt-work:${libs.hilt_work_manager}"
+}
